@@ -15,6 +15,7 @@ int main(void) {
         printf("5 - Visualizar heap Máxima\n");
         printf("6 - Visualizar heap\n");
         printf("7 - Visualizar aeronave por identificador\n");
+        printf("8 - Atualizar prioridade\n");
         printf("0 - Sair\n");
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
@@ -144,6 +145,14 @@ int main(void) {
                 scanf("%s", identificador);
 
                 findAeronave(h, identificador);
+                break;
+            }
+            case 8: {
+                char identificador[100];
+                printf("Digite o identificador da aeronave: ");
+                scanf("%s", identificador);
+                
+                atualizaPrioridade(h, identificador);
                 break;
             }
             case 0: {
