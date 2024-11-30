@@ -9,6 +9,7 @@ Aviao contructorAeronave(char identificador[100], double Combustivel, int tipo, 
     aeronave.prioridade = ((1000 - Combustivel) + (1440 - previsao) + 500*tipo + 5000*emergencia);
     return aeronave;
 }
+
 void informacaoAeronave(Aviao aeronave){
     printf("Identificador: %s \n", aeronave.identificador);
     printf("Combustivel: %2.f \n", aeronave.Combustivel);
@@ -17,6 +18,7 @@ void informacaoAeronave(Aviao aeronave){
     printf("Previsao: %d \n", aeronave.previsao);
     printf("Prioridade: %2.f \n", aeronave.prioridade);
 }
+
 Aviao getAviao(Aviao* aeronaves, int indice){
     if(indice > sizeof(aeronaves)){
         printf("Este índice não existe\n");
@@ -27,6 +29,7 @@ Aviao getAviao(Aviao* aeronaves, int indice){
         }
     }
 }
+
 heap* criaHeap(int capacity, Aviao* aeronaves){
     heap* h = (heap*)malloc(sizeof(heap));
     if(h == NULL){
@@ -53,10 +56,11 @@ heap* criaHeap(int capacity, Aviao* aeronaves){
     }
     return h;
 }
-//
+
+// Função para manter a propriedade da heap máxima
 void maxHeapify(heap* h, int index)
 {
-	int left = index * 2 + 1;
+    int left = index * 2 + 1;
     int rigth = index*2 + 2;
     int max = index;
 
@@ -73,38 +77,38 @@ void maxHeapify(heap* h, int index)
         max = rigth;
     }
  
-    // Swapping the nodes
+    // Troca os nós
     if (max != index) {
         Aviao temp = h->data[max];
         h->data[max] = h->data[index];
         h->data[index] = temp;
  
-        // recursively calling for their child elements
-        // to maintain max heap
+        // Chamando recursivamente para os elementos filhos
+        // para manter a propriedade da heap máxima
         maxHeapify(h, max);
     }
-    
 }
-// Defining maxHeapify_bottom_up function
+
+// Função auxiliar para ajustar a heap de baixo para cima
 void insertHelper(heap* h, int index)
 {
+    // Armazena o pai do elemento no índice
+    // na variável parent
+    int parent = (index - 1) / 2;
 
-	// Store parent of element at index
-	// in parent variable
-	int parent = (index - 1) / 2;
+    if (h->data[parent].prioridade < h->data[index].prioridade) {
+        // Troca quando o filho tem prioridade maior
+        // que o pai
+        Aviao temp = h->data[parent];
+        h->data[parent] = h->data[index];
+        h->data[index] = temp;
 
-	if (h->data[parent].prioridade < h->data[index].prioridade) {
-		// Swapping when child is smaller
-		// than parent element
-		Aviao temp = h->data[parent];
-		h->data[parent] = h->data[index];
-		h->data[index] = temp;
-
-		// Recursively calling maxHeapify_bottom_up
-		insertHelper(h, parent);
-	}
+        // Chamando recursivamente insertHelper
+        insertHelper(h, parent);
+    }
 }
 
+// Insere um novo elemento na heap
 void insert(heap* h, Aviao data) {
     if (h->size >= h->capacity) {
         // Dobra a capacidade
@@ -116,12 +120,23 @@ void insert(heap* h, Aviao data) {
         }
         h->data = new_data;
     }
-    // Insere o novo dado e ajusta o heap
+
+    // Verifica se já existe uma aeronave com o mesmo identificador
+    for (int i = 0; i < h->size; i++) {
+        if (strcmp(h->data[i].identificador, data.identificador) == 0) {
+            printf("Já existe aeronave com o código de registro %s\n", data.identificador);
+            return; 
+        }
+    }
+
+    // Insere o novo dado e ajusta a heap
     h->data[h->size] = data;
     insertHelper(h, h->size); // Reajusta para manter a propriedade da heap
     h->size++;
 }
 
+
+// Remove o nó de maior prioridade da heap
 void deleteNode(heap* h){
     Aviao deleteItem;
     if(h-> size == 0){
@@ -134,6 +149,8 @@ void deleteNode(heap* h){
 
     maxHeapify(h, 0);
 }
+
+// Atualiza a prioridade de uma aeronave com base no identificador
 void atualizaPrioridade(heap*h, char identificador[100]){
     for(int i = 0; i < h->size; i++){
         if(strcmp(h->data[i].identificador, identificador)){
@@ -154,14 +171,9 @@ void atualizaPrioridade(heap*h, char identificador[100]){
     }
     maxHeapify(h, 0);
 }
-void exibirHeap(heap* h) {
-    printf("Mostrando tabela:\n");
-    for (int i = 0; i < h->size; i++) {
-        printf("####POSIÇÃO %d####\n", i);
-        informacaoAeronave(h->data[i]);
-    }
-}
 
+
+// Remove a quebra de linha de uma string, se presente
 void remover_quebra_linha(char* str) {
     if (str == NULL) return;
     size_t len = strlen(str);
@@ -170,6 +182,7 @@ void remover_quebra_linha(char* str) {
     }
 }
 
+// Carrega os voos a partir de um arquivo e insere na heap
 void carregar_voos(heap* h, char nome_arquivo[500]) {
     FILE* file = fopen(nome_arquivo, "r");
     if (file == NULL) {
@@ -203,6 +216,7 @@ void carregar_voos(heap* h, char nome_arquivo[500]) {
     fclose(file);
 }
 
+// Remove uma aeronave com base no identificador
 void removeAeronave(heap* h, char identificador[100]) {
     for (int i = 0; i < h->size; i++) {
         if (strcmp(h->data[i].identificador, identificador) == 0) {
@@ -215,6 +229,7 @@ void removeAeronave(heap* h, char identificador[100]) {
     printf("Esta aeronave não existe na lista\n");
 }
 
+// Busca e exibe uma aeronave com base no identificador
 void findAeronave(heap* h, char identificador[100]) {
     for (int i = 0; i < h->size; i++) {
         if (strcmp(h->data[i].identificador, identificador) == 0) {
@@ -225,5 +240,3 @@ void findAeronave(heap* h, char identificador[100]) {
     }
     printf("Esta aeronave não existe na lista\n");
 }
-
-

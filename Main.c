@@ -13,7 +13,7 @@ int main(void) {
         printf("3 - Remover aeronave de maior prioridade\n");
         printf("4 - Remover aeronave por identificador\n");
         printf("5 - Visualizar heap Máxima\n");
-        printf("6 - Visualizar heap em ordem decrescente\n");
+        printf("6 - Visualizar heap\n");
         printf("7 - Visualizar aeronave por identificador\n");
         printf("0 - Sair\n");
         printf("Escolha uma opção: ");
@@ -75,9 +75,14 @@ int main(void) {
                 scanf("%d", &emergencia);
                 printf("Digite a previsão: ");
                 scanf("%d", &previsao);
+                int comp = h->size;
 
                 Aviao aeronave = contructorAeronave(identificador, combustivel, tipo, emergencia, previsao);
                 insert(h, aeronave);
+                int comp_2 = h->size;
+                if(comp == comp_2){
+                    break;
+                }
 
                 printf("Aeronave inserida na heap.\n");
                 break;
@@ -121,7 +126,7 @@ int main(void) {
                     break;
                 }
 
-                printf("Visualizando heap em ordem decrescente:\n");
+                printf("Visualizando heap\n");
                 for (int i = 0; i < h->size; i++) {
                     printf("####POSIÇÃO %d####\n", i);
                     informacaoAeronave(h->data[i]);

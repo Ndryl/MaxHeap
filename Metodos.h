@@ -30,7 +30,6 @@ void insertHelper(heap* h, int index);
 void insert(heap* h, Aviao data);
 void deleteNode(heap* h);
 void atualizaPrioridade(heap*h, char identificador[100]);
-void exibirHeap(heap* h);
 void maxHeapify(heap* h, int index);
 void carregar_voos(heap* h, char nome_arquivo[500]);
 void remover_quebra_linha(char* str);
